@@ -13,11 +13,11 @@ let connection: Connection;
 describe('Transaction', () => {
   beforeAll(async () => {
     connection = await createConnection('test-connection');
-    
+
     await connection.query('DROP TABLE IF EXISTS transactions');
     await connection.query('DROP TABLE IF EXISTS categories');
     await connection.query('DROP TABLE IF EXISTS migrations');
-    
+
     await connection.runMigrations();
   });
 
@@ -34,29 +34,30 @@ describe('Transaction', () => {
   });
 
   it('should be able to list transactions', async () => {
+    console.log('primeiro');
     await request(app).post('/transactions').send({
       title: 'March Salary',
       type: 'income',
       value: 4000,
       category: 'Salary',
     });
-
+    console.log('segundo');
     await request(app).post('/transactions').send({
       title: 'April Salary',
       type: 'income',
       value: 4000,
       category: 'Salary',
     });
-
+    console.log('terceiro');
     await request(app).post('/transactions').send({
       title: 'Macbook',
       type: 'outcome',
       value: 6000,
       category: 'Eletronics',
     });
-
+    console.log('fimm');
     const response = await request(app).get('/transactions');
-
+    console.log(response.body.transactions);
     expect(response.body.transactions).toHaveLength(3);
     expect(response.body.balance).toMatchObject({
       income: 8000,
@@ -65,7 +66,7 @@ describe('Transaction', () => {
     });
   });
 
-  it('should be able to create new transaction', async () => {
+ it('should be able to create new transaction', async () => {
     const transactionsRepository = getRepository(Transaction);
 
     const response = await request(app).post('/transactions').send({
